@@ -6,7 +6,7 @@ metadata:
 spec:
   identityRef:
     name: {{ .Values.cluster.name }}-cloud-config
-    kind: Secret
+    cloudName: openstack
 
   # Configuracion de red interna
   network:

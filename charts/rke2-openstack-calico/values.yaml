@@ -2,7 +2,7 @@ cluster:
   name: "prod-cluster" # nombre del cluster
   prefixNode: "ws"
   cloudCredentialSecretName: ""
-  kubernetesVersion: v1.31.4 # version de kubernetes a usar
+  kubernetesVersion: v1.33.0+rke2r1 # version de kubernetes a usar
   etcd:
     exposeMetrics: false # ExposeMetrics define la política para la exposición de métricas ETCD
     backup:
@@ -38,22 +38,21 @@ infraConfig:
   availabilityZones:
     - nova
   domainName: Default
-  keypairName: whitecruiser
+  keypairName: Hector
   netName: PUBLIC
   subnetName: VPN
   region: RegionOne
-  secGroups: default
   sshUser: ubuntu
   tenantName: hventura
   username: hventura
   password:
     secret:
-      name: <change>
-      namespace: <change>
+      name: passocp2
+      namespace: default
   caCerts:
     configMap:
-      name: <change>
-      namespace: <change>
+      name: ""
+      namespace: ""
 
 # ===============
 # Nodos Control Plane
@@ -68,7 +67,7 @@ controlPlaneNodes:
   flavorName: m1.large
   imageName: Ubuntu 22.04 LTS
   securityGroups:
-    - default
+    - all
   name: cp-node-01
 
 # ===============
@@ -81,18 +80,18 @@ workerNodes:
         effect: NoSchedule
     labels:
       node-role.kubernetes.io/worker: ""
-    flavorName: m1.medium
+    flavorName: m1.large
     imageName: Ubuntu 22.04 LTS
-    quantity: 1
+    quantity: 2
     securityGroups:
       - default
-      - permit-all
+      - all
 
   nodes:
-    - name: worker-node-01
-      hostname: worker-node-01
-      quantity: 3
-      flavorName: m1.medium
+    - name: worker-node
+      hostname: worker-node
+      quantity: 2
+      flavorName: m1.large
       labels:
         node-role.kubernetes.io/worker: "true"
 
