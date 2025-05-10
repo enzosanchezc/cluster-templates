@@ -1,0 +1,152 @@
+{{- $replicas := .Values.controlPlaneNodes.quantity }}
+
+{{- if not (eq (mod $replicas 2) 1) }}
+  {{ fail "ERROR: replicas debe ser un número impar" }}
+{{- end }}
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+kind: RKE2ControlPlaneTemplate
+metadata:
+  name: {{ .Values.cluster.name }}-control-plane
+  namespace: fleet-default
+spec:
+  version: {{ .Values.cluster.kubernetesVersion }}
+  replicas: {{ $replicas }}
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: OpenStackMachineTemplate
+      name: name: {{ .Values.cluster.name }}-control-plane
+      namespace: fleet-default
+    nodeDrainTimeout: 2m
+  # Esta configuración se aplica a todos los nodos del plano de control
+  agentConfig:
+    # NodeLabels son etiquetas con las que se registrará el kubelet
+    nodeLabels:
+    {{- with $.Values.controlPlaneNodes.labels }}
+      - {{ . }}
+    {{- end }}
+
+    # NodeAnnotations son anotaciones que se crean en los nodos después de la fase de bootstrap
+    nodeAnnotations:
+    {{- with $.Values.controlPlaneNodes.annotations }}
+      - {{ . }}
+    {{- end }}
+    # NodeTaints son taints con los que se registrará el kubelet
+    nodeTaints:
+    {{- with $.Values.controlPlaneNodes.taints }}
+      - {{ . }}
+    {{- end }}
+
+    # NodeNamePrefix es un prefijo para el nombre del nodo que CAPI generará
+    nodeName: {{ .Values.cluster.prefixNode | default "ws" }}
+
+    # ProtectKernelDefaults define el comportamiento de ajuste del kernel
+    # Si es true, error si los ajustes del kernel son diferentes a los predeterminados de kubelet
+    protectKernelDefaults: false
+
+    # Kubelet contiene configuración personalizada para el proceso de kubelet
+    kubelet:
+      extraArgs:
+      {{- with $.Values.cluster.kubeComponents.kubelet.extraArgs }}
+      - {{ . }}
+      {{- end }}
+    # KubeProxy contiene configuración personalizada para el proceso de kube-proxy
+    kubeProxy:
+      extraArgs:
+      {{- with $.Values.cluster.kubeComponents.kubeProxy.extraArgs }}
+        - {{ . }}
+      {{- end }}
+
+    # Format especifica el formato de salida de los datos de bootstrap (cloud-config o ignition)
+    format: "cloud-config"
+
+    # AdditionalUserData permite a los usuarios especificar configuración adicional de cloud-init o ignition
+    additionalUserData:
+      data:
+        runcmd:
+          - "echo 'nodo creado con cluster-templates' > /etc/whitestack.metadata"
+
+  # ServerConfig especifica la configuración específica para los nodos del servidor RKE2
+  serverConfig:
+    # Opciones: none, calico, canal, cilium
+    cni: "calico"
+    files:
+      - content: |
+          apiVersion: helm.cattle.io/v1
+          kind: HelmChart
+          metadata:
+            name: calico
+            namespace: kube-system
+          spec:
+            chart: tigera-operator
+            repo: https://docs.projectcalico.org/charts
+            version: v3.24.5
+            targetNamespace: tigera-operator
+            createNamespace: true
+            valuesContent: |-
+              installation:
+                calicoNetwork:
+                {{- if eq .Values.cniConfig.bgp true }}
+                  bgp: Enabled
+                {{- end }}
+                {{- if not (hasKey .Values.cniConfig.additionalConfig "mtu") }}
+                  mtu: {{ .Values.cniConfig.mtu | default 1440 }}
+                {{- end }}
+                {{- if not (hasKey .Values.cniConfig.additionalConfig "ipPools") }}
+                  ipPools:
+                    - cidr: {{ .Values.cniConfig.podCIDR }}
+                      disableBGPExport: true
+                      encapsulation: {{ .Values.cniConfig.tunnelProtocol | upper }}
+                    {{- if eq .Values.cniConfig.masquerade true }}
+                      natOutgoing: Enabled
+                    {{- end }}
+                      nodeSelector: all()
+                {{- end }}
+                {{- if .Values.cniConfig.additionalConfig }}
+                  {{- toYaml .Values.cniConfig.additionalConfig | indent 18 }}
+                {{- end }}
+        path: /var/lib/rancher/rke2/server/manifests/calico-custom.yaml
+        owner: root:root
+        permissions: "0644"
+    # CNIMultusEnable habilita multus como el primer plugin CNI
+    cniMultusEnable: false
+
+    # Etcd define la configuración personalizada opcional de ETCD
+    etcd:
+      # ExposeMetrics define la política para la exposición de métricas ETCD
+      exposeMetrics: {{ .Values.cluster.etcd.exposeMetrics }}
+      # BackupConfig define cómo RKE2 hará snapshot de ETCD
+      backupConfig:
+        # DisableAutomaticSnapshots desactiva las snapshot automáticas
+        disableAutomaticSnapshots: {{ .Values.cluster.etcd.backup.disableAutomaticSnapshots }}
+        # SnapshotName es el nombre de la instantánea
+        snapshotName: "etcd-snapshot-{{ .Values.cluster.name }}"
+        # ScheduleCron es la programación cron para las snapshot
+        scheduleCron: "0 */5 * * *"
+        # Retention es el número de snapshot a retener
+        retention: "5"
+      # CustomConfig define la configuración personalizada para ETCD
+      customConfig:
+        extraArgs:
+        {{- with $.Values.cluster.etcd.extraArgs }}
+          - {{ . }}
+        {{- end }}
+    # KubeAPIServer define la configuración personalizada opcional del Kube API Server
+    kubeAPIServer:
+      extraArgs:
+      {{- with $.Values.cluster.kubeComponents.kubeApiServer.extraArgs }}
+        - {{ . }}
+      {{- end }}
+    # KubeControllerManager define la configuración personalizada opcional del Kube Controller Manager
+    kubeControllerManager:
+      extraArgs:
+      {{- with $.Values.cluster.kubeComponents.kubeControllerManager.extraArgs }}
+        - {{ . }}
+      {{- end }}
+
+    # KubeScheduler define la configuración personalizada opcional del Kube Scheduler
+    kubeScheduler:
+      extraArgs:
+      {{- with $.Values.cluster.kubeComponents.kubeShceduler.extraArgs }}
+        - {{ . }}
+      {{- end }}

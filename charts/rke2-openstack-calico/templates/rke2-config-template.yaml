@@ -1,0 +1,49 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: RKE2ConfigTemplate
+metadata:
+    name: {{ .Values.cluster.name }}-rke2-config
+  namespace: fleet-default
+spec:
+  # Plantilla para la configuración RKE2
+  template:
+    spec:
+      # Configuración para registros privados de contenedores
+      privateRegistriesConfig: {}
+      # Configuración del agente RKE2 (aplica a todos los nodos)
+      agentConfig:
+        # Formato de los datos de bootstrap (cloud-config o ignition)
+        format: "cloud-config"
+
+        # Etiquetas para los nodos Kubernetes
+{{/*        nodeLabels:*/}}
+{{/*          - "node.kubernetes.io/worker=true"*/}}
+{{/*          - "node.kubernetes.io/instance-type=large"*/}}
+{{/*          - "workload-type=memory-intensive"*/}}
+
+{{/*        # Anotaciones para los nodos Kubernetes*/}}
+{{/*        nodeAnnotations:*/}}
+{{/*          custom.annotation/example: "valor"*/}}
+{{/*          cluster.x-k8s.io/machine-type: "worker-large"*/}}
+
+{{/*        # Taints para los nodos Kubernetes*/}}
+{{/*        nodeTaints:*/}}
+{{/*          - "dedicated=large-workloads:NoSchedule"*/}}
+
+        # Prefijo para el nombre del nodo
+        #nodeName: "worker-large"
+
+        # Configuración de Kubelet
+        kubelet:
+          extraArgs:
+          {{- with $.Values.cluster.kubeComponents.kubelet.extraArgs }}
+          - {{ . }}
+          {{- end }}
+        # KubeProxy contiene configuración personalizada para el proceso de kube-proxy
+        kubeProxy:
+          extraArgs:
+          {{- with $.Values.cluster.kubeComponents.kubeProxy.extraArgs }}
+            - {{ . }}
+          {{- end }}
+
+        # Registro privado para imágenes del sistema
+        systemDefaultRegistry: ""

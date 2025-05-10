@@ -1,0 +1,77 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackMachineTemplate
+metadata:
+  name: {{ .Values.cluster.name }}-control-plane
+  namespace: fleet-default
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ .Values.cluster.name }}
+    cluster.x-k8s.io/role: control-plane
+spec:
+  template:
+    spec:
+      flavor: {{ .Values.controlPlaneNodes.flavorName }}
+      image:
+        filter:
+          name: {{ .Values.controlPlaneNodes.imageName }}
+
+      # Nombre de la clave SSH para acceder a la instancia
+      sshKeyName: {{ .Values.infraConfig.keypairName }}
+
+      # Grupos de seguridad a nivel de máquina
+      {{- if .Values.controlPlaneNodes.securityGroups }}
+      securityGroups:
+        {{- range .Values.controlPlaneNodes.securityGroups }}
+        - filter:
+            name: {{ . }}
+        {{- end }}
+      {{- end }}
+
+      serverMetadata:
+        - key: hostname
+          value: {{ .Values.controlPlaneNodes.name }}
+      # Etiquetas para los recursos de OpenStack
+      tags:
+      - {{ .Values.cluster.name }}
+      - control-plane
+
+      # Habilitar Config Drive para metadatos - opcional
+      configDrive: true
+
+{{/*      # Configuración del volumen raíz - opcional*/}}
+{{/*      # Si se especifica, la instancia arrancará desde un volumen*/}}
+{{/*      rootVolume:*/}}
+{{/*        # Tamaño del volumen en GiB*/}}
+{{/*        sizeGiB: 40*/}}
+{{/*        # Tipo de volumen en Cinder*/}}
+{{/*        type: ssd*/}}
+{{/*        # Zona de disponibilidad para el volumen*/}}
+{{/*        availabilityZone:*/}}
+{{/*          # Se puede obtener de un nombre específico o de la máquina*/}}
+{{/*          from: Name*/}}
+{{/*          name: nova*/}}
+
+{{/*      # Dispositivos de bloque adicionales - opcional*/}}
+{{/*      additionalBlockDevices:*/}}
+{{/*      - name: data*/}}
+{{/*        # Tamaño del volumen en GiB*/}}
+{{/*        sizeGiB: 100*/}}
+{{/*        # Configuración del almacenamiento*/}}
+{{/*        storage:*/}}
+{{/*          # Tipo de almacenamiento: Volume o Local*/}}
+{{/*          type: Volume*/}}
+{{/*          # Configuración específica para volúmenes*/}}
+{{/*          volume:*/}}
+{{/*            # Tipo de volumen en Cinder*/}}
+{{/*            type: standard*/}}
+
+{{/*      # Grupo de servidores para colocación*/}}
+{{/*      serverGroup:*/}}
+{{/*        filter:*/}}
+{{/*          name: anti-affinity-group*/}}
+
+{{/*      # Propiedades adicionales para el scheduler de OpenStack */}}
+{{/*      schedulerHintAdditionalProperties:*/}}
+{{/*      - name: group*/}}
+{{/*        value:*/}}
+{{/*          type: String*/}}
+{{/*          string: control-plane-group*/}}

@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackCluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: fleet-default
+spec:
+  identityRef:
+    name: {{ .Values.cluster.name }}-cloud-config
+    kind: Secret
+
+  # Configuracion de red interna
+  network:
+    filter:
+      name: {{ .Values.infraConfig.netName }}
+
+  # Configuración de subred
+  subnets:
+    filter:
+      name: {{ .Values.infraConfig.subnetName }}
+
+  controlPlaneAvailabilityZones:
+  {{- with $.Values.infraConfig.availabilityZones }}
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  # Configuración del balanceador de carga para el API server
+  apiServerLoadBalancer:
+    enabled: false
+  disableAPIServerFloatingIP: true
+  disableExternalNetwork: true

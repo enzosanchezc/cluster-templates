@@ -1,0 +1,64 @@
+{{- range $index, $worker := .Values.workerNodes.nodes }}
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  # Nombre del MachineDeployment - debe ser único en el namespace
+  name: {{ printf "%s-%s" $.Values.cluster.name $worker.name }}
+  # Namespace donde se creará el recurso
+  namespace: fleet-default
+  # Etiquetas opcionales para organizar recursos
+  labels:
+    {{- if $worker.labels }}
+    {{ toYaml $worker.labels | nindent 4 }}
+    {{- else }}
+    {{ toYaml $.Values.workerNodes.defaults.labels | nindent 4 }}
+    {{- end }}
+spec:
+  # Nombre del clúster al que pertenece este MachineDeployment
+  clusterName: {{ $.Values.cluster.name }}
+  # Número de réplicas (nodos worker) que se crearán
+  replicas: {{ $worker.quantity | default $.Values.workerNodes.defaults.quantity }}
+  # Estrategia de despliegue para actualizar máquinas
+  strategy:
+    # Tipo de estrategia (RollingUpdate es la única soportada actualmente)
+    type: RollingUpdate
+    # Configuración para RollingUpdate
+    rollingUpdate:
+      # Máximo de máquinas que pueden estar indisponibles durante la actualización
+      maxUnavailable: 0
+      # Máximo de máquinas adicionales que pueden crearse durante la actualización
+      maxSurge: 1
+  # Selector para identificar las máquinas que pertenecen a este MachineDeployment
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: {{ $.Values.cluster.name }}
+  # Plantilla para las máquinas que se crearán
+  template:
+    # Metadatos para las máquinas creadas
+    metadata:
+      labels:
+        # Estas etiquetas deben coincidir con el selector anterior
+        cluster.x-k8s.io/cluster-name: {{ $.Values.cluster.name }}
+    # Especificación de la máquina
+    spec:
+      # Nombre del clúster (debe coincidir con clusterName arriba)
+      clusterName: {{ $.Values.cluster.name }}
+      # Versión de Kubernetes para esta máquina (debe incluir +rke2r1 para RKE2)
+      version: {{ $.Values.cluster.kubernetesVersion }}
+      # Configuración de bootstrap - define cómo se inicializará el nodo
+      bootstrap:
+        # Referencia al template de configuración RKE2
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: RKE2ConfigTemplate
+          name: {{ $.Values.cluster.name }}-rke2-config
+      # Referencia a la plantilla de infraestructura - define las características de la máquina
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: OpenStackMachineTemplate
+        name: {{ .Values.cluster.name }}-worker-{{ $worker.name }}
+      # Tiempo de espera para drenar el nodo antes de eliminarlo
+      nodeDrainTimeout: 5m
+      # Política de eliminación de nodos (Delete o Drain)
+      deletePolicy: Drain
+{{- end }}

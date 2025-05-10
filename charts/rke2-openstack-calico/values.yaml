@@ -1,0 +1,305 @@
+cluster:
+  name: "prod-cluster" # nombre del cluster
+  prefixNode: "ws"
+  cloudCredentialSecretName: ""
+  kubernetesVersion: v1.31.4 # version de kubernetes a usar
+  etcd:
+    exposeMetrics: false # ExposeMetrics define la política para la exposición de métricas ETCD
+    backup:
+      disableAutomaticSnapshots: true
+    extraArgs: [] # configuración de etcd https://etcd.io/docs/v3.2/op-guide/configuration/
+  # extraArgs:
+  # - election-timeout=1000
+  kubeComponents:
+    kubeControllerManager:
+      extraArgs: [] # extra args para el kube controller manager. https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/
+      # extraArgs:
+      # - cloud-provider=external
+    kubeApiServer:
+      extraArgs: [] # extra args para el kube apiserver. https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/
+    kubeShceduler:
+      extraArgs: [] # extra args para el kube scheduler. https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/
+    kubeProxy:
+      extraArgs: [] # extra args para el kube proxy. https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/
+    kubelet:
+      extraArgs: [] # extra args para el kubelet de todos los nodos del cluster. https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/
+  labels: {} # labels para todos los nodos del cluster
+  annotations: {} # annotations para todos los nodos del cluster
+  additionalManifests: |-
+    --- manifest-content
+  rke2Config:
+    agentEnvVars: {}
+
+# ===============
+# Configuración global de OpenStack
+# ===============
+infraConfig:
+  authUrl: http://10.100.1.22:5000/v3
+  availabilityZones:
+    - nova
+  domainName: Default
+  keypairName: whitecruiser
+  netName: PUBLIC
+  subnetName: VPN
+  region: RegionOne
+  secGroups: default
+  sshUser: ubuntu
+  tenantName: hventura
+  username: hventura
+  password:
+    secret:
+      name: <change>
+      namespace: <change>
+  caCerts:
+    configMap:
+      name: <change>
+      namespace: <change>
+
+# ===============
+# Nodos Control Plane
+# ===============
+controlPlaneNodes:
+  quantity: 1
+  taints:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+  labels:
+    node-role.kubernetes.io/control-plane: ""
+  flavorName: m1.large
+  imageName: Ubuntu 22.04 LTS
+  securityGroups:
+    - default
+  name: cp-node-01
+
+# ===============
+# Nodos Worker
+# ===============
+workerNodes:
+  defaults:
+    taints:
+      - key: node-role.kubernetes.io/worker
+        effect: NoSchedule
+    labels:
+      node-role.kubernetes.io/worker: ""
+    flavorName: m1.medium
+    imageName: Ubuntu 22.04 LTS
+    quantity: 1
+    securityGroups:
+      - default
+      - permit-all
+
+  nodes:
+    - name: worker-node-01
+      hostname: worker-node-01
+      quantity: 3
+      flavorName: m1.medium
+      labels:
+        node-role.kubernetes.io/worker: "true"
+
+cniConfig:
+  podCIDR: "10.42.0.0/16"
+  serviceCIDR: "10.42.0.0/16"
+  mtu: 1440
+  tunnelProtocol: "IPIP"
+  masquerade: true
+  bgp: false
+  # Configures general installation parameters for Calico. Schema is based
+  # on the operator.tigera.io/Installation API documented
+  # here: https://docs.tigera.io/calico/latest/reference/installation/api#operator.tigera.io/v1.InstallationSpec
+  # Values ref. for cilium: https://github.com/rancher/rke2-charts/blob/main/charts/rke2-cilium/rke2-cilium/1.17.300/values.yaml
+  additionalConfig: {}
+
+storage:
+  longhorn:
+    enabled: true
+    defaultValues:
+      persistence:
+        defaultClass: false
+      defaultSettings:
+        replicaSoftAntiAffinity: false
+        autoDeletePodWhenVolumeDetachedUnexpectedly: true
+        allowVolumeCreationWithDegradedAvailability: false
+        replicaAutoBalance: least-effort
+        storageMinimalAvailablePercentage: 25
+        storageOverProvisioningPercentage: 200
+        defaultDataPath: /var/lib/longhorn/
+        nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+    customValues: |
+      <values_yaml_format>
+  openebs: # https://github.com/openebs/charts/blob/main/charts/openebs/values.yaml
+    enabled: true
+    defaultValues: # valores por defecto del chart
+      apiserver:
+        enabled: false
+      localprovisioner:
+        replicas: 2
+      ndm:
+        enabled: false
+      ndmOperator:
+        enabled: false
+      analytics:
+        enabled: false
+      webhook:
+        enabled: false
+      snapshotOperator:
+        enabled: false
+      policies:
+        monitoring:
+          enabled: false
+      provisioner:
+        enabled: false
+    customValues: | # estos valores hace overwrite sobre los values por defecto
+      <values_yaml_format>
+  cinder:
+    enabled: true
+    defaultValues:
+      authUrl: "https://whitecloud.tcloud.com:5000"
+      username: "admin"
+      password: "F2045uJOeDEH16jYxUrmlBDVSQKP2G2reXMFIeK6"
+      region: "RegionOne"
+      tenantID: "c2fced11479946d7b8f31b18b8e7e37f"
+      tenantName: "TELCO_TOOLS"
+      domainName: "Default"
+      domainID: "default"
+      caCert: |
+        <ca-cert_content>
+    customValues: |
+      <values_yaml_format>
+  ceph:
+    enabled: true
+    defaultValues:
+      clusterID: "aaaaaaaa-bbbb-1111-2222-33333ccccccc"
+      monitorList: [ ]
+      # monitorList:
+      #  - "1.2.3.4:6789"
+      #  - "1.2.3.5:6789"
+      pool: "volumes"
+      userID: "admin"
+      userKey: "AAAAAAAAAAAAAAAAAA/BBBBBBBBBBBBBBBBBBB=="
+      provisionerReplicaCount: 3
+      reclaimPolicy: "Retain"
+      csiRBD:
+        enabled: false
+      csiFS:
+        enabled: false
+        fsName: "whitemist-fs"
+    customValues: |
+      <values_yaml_format>
+
+logging:
+  enabled: true
+  clusterOutputs:
+    server:
+      host: <changeme>
+      port: 24224
+  customValues: |
+    <values>
+metallb:
+  enabled: true
+  defaultValues: { }
+  customValues: |
+    <values>
+monitoring:
+  enabled: false
+  version: 105.1.0+up61.3.2
+  thanos:
+    objectStorage:
+      accessKey: <changeme>
+      bucket: <changeme>
+      endpoint: <changeme:changeme>
+      secretKey: <changeme>
+  thanosIngress:
+    host: <changeme>
+ingressNginx:
+  enabled: true
+  defaultValues: {}
+  customValues: |
+    <values>
+kubevirt:
+  enabled: true
+  emulation: true
+  customValues: |
+    <values>
+sriovOperator:
+  enabled: true
+  defaultValues:
+    operator:
+      resourcePrefix: "intel.com"
+    sriovOperatorConfig:
+      deploy: true
+      configDaemonNodeSelector: { }
+      logLevel: 2
+      disableDrain: false
+      configurationMode: daemon
+  customValues: |
+    <values>
+nodeConfigOperator:
+  enabled: true
+  defaultValues:
+    managerConfig:
+      aptEnabled: true
+      hostfsEnabled: true
+  customValues: |
+    <values>
+nmstateOperator:
+  enabled: true
+  defaultValues: {}
+  customValues: |
+    <values>
+sdnController:
+  enabled: true
+  defaultValues: { }
+  customValues: |
+    <values>
+ntp:
+  enabled: true
+  defaultValues: { }
+  customValues: |
+    <values>
+x509CertExporter:
+  enabled: true
+  defaultValues:
+    image:
+      pullPolicy: IfNotPresent
+    psp:
+      create: false
+    rbac:
+      create: true
+    podExtraLabels: [ ]
+    hostPathsExporter:
+      podAnnotations: [ ]
+      watchDirectories: [ ]
+      watchFiles: [ ]
+      watchKubeconfFiles: [ ]
+      daemonSets:
+        cp:
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: ""
+          tolerations:
+            - effect: NoSchedule
+              key: node-role.kubernetes.io/control-plane
+              operator: Exists
+    rbacProxy:
+      enabled: false
+  customValues: |
+    <values>
+
+registries:
+  enabled: false
+#  mirrors:
+#    "docker.io":
+#      endpoints:
+#        - "https://registry.internal.example.com"
+#      rewrite: {}
+#  configs:
+#    "registry.internal.example.com":
+#      auth:
+#        username: "registry-user"
+#        passwordSecret:
+#          name: "registry-creds"
+#          key: "password"
+#      tls:
+#        insecureSkipVerify: false
+#        caSecret:
+#          name: "registry-ca"
+#          key: "ca.crt"

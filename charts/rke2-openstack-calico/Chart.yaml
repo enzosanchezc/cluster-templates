@@ -1,0 +1,8 @@
+apiVersion: v1
+name: rke2-openstack-calico
+description: Cluster templates for rke2 with CAPI
+version: 1.0.0
+icon: https://media.licdn.com/dms/image/v2/C4D0BAQFQyOXEVSC5qA/company-logo_200_200/company-logo_200_200/0/1631363545995?e=2147483647&v=beta&t=7NE6Z6LoJRCs1N5UqxWp7cR9pBTdBKJm_gxRrpwwuGI
+annotations:
+  catalog.cattle.io/type: cluster-template
+  catalog.cattle.io/namespace: fleet-default
