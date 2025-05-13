@@ -6,7 +6,9 @@ metadata:
   labels:
     cloud: openstack
     cluster-api.cattle.io/rancher-auto-import: "true"
-  {{- .Values.cluster.labels | nindent 4 }}
+    {{- if .Values.cluster.labels }}
+    {{- toYaml .Values.cluster.labels | nindent 4 }}
+    {{- end }}
 spec:
   clusterNetwork:
     serviceDomain: cluster.local
