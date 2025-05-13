@@ -29,7 +29,7 @@ spec:
 
       # Etiquetas para los recursos de OpenStack
       tags:
-      - {{ .Values.cluster.name }}
+      - {{ $.Values.cluster.name }}
       - worker
 
       # Habilitar Config Drive para metadatos - opcional
