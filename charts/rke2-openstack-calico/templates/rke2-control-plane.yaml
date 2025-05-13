@@ -15,7 +15,7 @@ spec:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: OpenStackMachineTemplate
-      name: name: {{ .Values.cluster.name }}-control-plane
+      name: {{ .Values.cluster.name }}-control-plane
       namespace: fleet-default
     nodeDrainTimeout: 2m
   # Esta configuración se aplica a todos los nodos del plano de control
