@@ -19,8 +19,8 @@ spec:
       name: {{ .Values.infraConfig.subnetName }}
 
   controlPlaneAvailabilityZones:
-  {{- with $.Values.infraConfig.availabilityZones }}
-    {{- . | nindent 4 }}
+  {{- range $.Values.infraConfig.availabilityZones }}
+    - {{ . }}
   {{- end }}
 
   # Configuración del balanceador de carga para el API server
