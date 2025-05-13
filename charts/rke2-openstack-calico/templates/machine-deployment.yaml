@@ -56,7 +56,7 @@ spec:
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: OpenStackMachineTemplate
-        name: {{ .Values.cluster.name }}-worker-{{ $worker.name }}
+        name: {{ $.Values.cluster.name }}-worker-{{ $worker.name }}
       # Tiempo de espera para drenar el nodo antes de eliminarlo
       nodeDrainTimeout: 5m
       # Política de eliminación de nodos (Delete o Drain)
