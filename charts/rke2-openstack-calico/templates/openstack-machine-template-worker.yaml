@@ -2,10 +2,10 @@
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
 metadata:
-  name: {{ .Values.cluster.name }}-worker-{{ $worker.name }}
+  name: {{ $.Values.cluster.name }}-worker-{{ $worker.name }}
   namespace: fleet-default
   labels:
-    cluster.x-k8s.io/cluster-name: {{ .Values.cluster.name }}
+    cluster.x-k8s.io/cluster-name: {{ $.Values.cluster.name }}
     cluster.x-k8s.io/role: worker
 spec:
   template:
@@ -13,15 +13,15 @@ spec:
       flavor: {{ $worker.flavorName | default $.Values.workerNodes.defaults.flavorName }}
       image:
         filter:
-          name: {{ .Values.workerNodes.defaults.imageName }}
+          name: {{ $.Values.workerNodes.defaults.imageName }}
 
       # Nombre de la clave SSH para acceder a la instancia
-      sshKeyName: {{ .Values.infraConfig.keypairName }}
+      sshKeyName: {{ $.Values.infraConfig.keypairName }}
 
       # Grupos de seguridad a nivel de máquina - opcional
-      {{- if .Values.workerNodes.defaults.securityGroups }}
+      {{- if $.Values.workerNodes.defaults.securityGroups }}
       securityGroups:
-        {{- range .Values.workerNodes.defaults.securityGroups }}
+        {{- range $.Values.workerNodes.defaults.securityGroups }}
         - filter:
             name: {{ . }}
         {{- end }}
