@@ -19,7 +19,7 @@ spec:
       ports:
         - network:
             filter:
-              name: {{ $.Values.infraConfig.internalNetwork }}
+              name: {{ $.Values.infraConfig.internalNetwork.netName }}
 
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ .Values.infraConfig.keypairName }}

@@ -61,7 +61,7 @@ infraConfig:
 # Nodos Control Plane
 # ===============
 controlPlaneNodes:
-  quantity: 1
+  quantity: 3
   taints: #"dedicated=large-workloads:NoSchedule"
     - key: node-role.kubernetes.io/control-plane
       value: true
