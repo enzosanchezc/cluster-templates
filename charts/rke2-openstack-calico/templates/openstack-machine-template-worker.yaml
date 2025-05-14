@@ -10,11 +10,17 @@ metadata:
 spec:
   template:
     spec:
+      identityRef:
+        name: {{ $.Values.cluster.name }}-cloud-config
+        cloudName: openstack
       flavor: {{ $worker.flavorName | default $.Values.workerNodes.defaults.flavorName }}
       image:
         filter:
           name: {{ $.Values.workerNodes.defaults.imageName }}
-
+      ports:
+        - network:
+            filter:
+              name: {{ $.Values.infraConfig.netName }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ $.Values.infraConfig.keypairName }}
 
