@@ -10,8 +10,8 @@ spec:
 
   # Configuracion de red interna
   network:
-    - filter:
-        name: {{ .Values.infraConfig.netName }}
+    filter:
+      name: {{ .Values.infraConfig.netName }}
 
   # Configuración de subred
   subnets:

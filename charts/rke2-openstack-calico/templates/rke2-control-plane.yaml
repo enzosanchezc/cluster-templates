@@ -63,8 +63,8 @@ spec:
     # AdditionalUserData permite a los usuarios especificar configuración adicional de cloud-init o ignition
     additionalUserData:
       data:
-        runcmd:
-          - "echo 'nodo creado con cluster-templates' > /etc/whitestack.metadata"
+        runcmd: |
+          - echo 'nodo creado con cluster-templates' > /etc/whitestack.metadata
 
   # ServerConfig especifica la configuración específica para los nodos del servidor RKE2
   serverConfig:
