@@ -28,3 +28,7 @@ spec:
     enabled: false
   disableAPIServerFloatingIP: false
   disableExternalNetwork: false
+
+  externalNetwork:
+    filter:
+      name: {{ .Values.infraConfig.netName }}
