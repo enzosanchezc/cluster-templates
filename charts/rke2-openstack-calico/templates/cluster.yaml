@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.cluster.name }}
   namespace: fleet-default
   labels:
+    cluster.x-k8s.io/cluster-name: {{ .Values.cluster.name }}
     cloud: openstack
     cluster-api.cattle.io/rancher-auto-import: "true"
     {{- if .Values.cluster.labels }}

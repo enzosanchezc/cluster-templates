@@ -71,6 +71,7 @@ controlPlaneNodes:
   securityGroups:
     - all
   name: cp-node-01
+  fixedIpApiServer: 10.100.18.126
 
 # ===============
 # Nodos Worker

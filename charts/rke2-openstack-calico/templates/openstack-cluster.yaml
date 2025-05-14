@@ -3,6 +3,8 @@ kind: OpenStackCluster
 metadata:
   name: {{ .Values.cluster.name }}
   namespace: fleet-default
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ .Values.cluster.name }}
 spec:
   identityRef:
     name: {{ .Values.cluster.name }}-cloud-config
@@ -28,7 +30,7 @@ spec:
     enabled: false
   disableAPIServerFloatingIP: true
   disableExternalNetwork: true
-  apiServerFixedIP: ""
+  apiServerFixedIP: {{ .Values.controlPlaneNodes.fixedIpApiServer }}
 {{/*  externalNetwork:*/}}
 {{/*    filter:*/}}
 {{/*      name: {{ .Values.infraConfig.netName }}*/}}

@@ -3,6 +3,8 @@ kind: RKE2ConfigTemplate
 metadata:
   name: {{ .Values.cluster.name }}-rke2-config
   namespace: fleet-default
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ .Values.cluster.name }}
 spec:
   # Plantilla para la configuración RKE2
   template:
