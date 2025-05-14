@@ -39,8 +39,11 @@ infraConfig:
     - nova
   domainName: Default
   keypairName: Hector
-  netName: PUBLIC
-  subnetName: VPN
+  internalNetwork:
+    netName: red_70
+    subnetName: subnet_70
+  externalNetwork:
+    netName: PUBLIC
   region: RegionOne
   sshUser: ubuntu
   tenantName: hventura
@@ -71,7 +74,6 @@ controlPlaneNodes:
   securityGroups:
     - all
   name: cp-node-01
-  fixedIpApiServer: 10.100.18.126
 
 # ===============
 # Nodos Worker

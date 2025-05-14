@@ -13,12 +13,12 @@ spec:
   # Configuracion de red interna
   network:
     filter:
-      name: {{ .Values.infraConfig.netName }}
+      name: {{ .Values.infraConfig.internalNetwork.netName }}
 
   # Configuración de subred
   subnets:
     - filter:
-        name: {{ .Values.infraConfig.subnetName }}
+        name: {{ .Values.infraConfig.internalNetwork.subnetName }}
 
   controlPlaneAvailabilityZones:
   {{- range $.Values.infraConfig.availabilityZones }}
@@ -28,9 +28,9 @@ spec:
   # Configuración del balanceador de carga para el API server
   apiServerLoadBalancer:
     enabled: false
-  disableAPIServerFloatingIP: true
-  disableExternalNetwork: true
-  apiServerFixedIP: {{ .Values.controlPlaneNodes.fixedIpApiServer }}
-{{/*  externalNetwork:*/}}
-{{/*    filter:*/}}
-{{/*      name: {{ .Values.infraConfig.netName }}*/}}
+  disableAPIServerFloatingIP: false
+  disableExternalNetwork: false
+  #apiServerFixedIP: {{ .Values.controlPlaneNodes.fixedIpApiServer }}
+  externalNetwork:
+    filter:
+      name: {{ .Values.infraConfig.externalNetwork.netName }}
