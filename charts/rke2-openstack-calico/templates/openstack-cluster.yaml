@@ -25,6 +25,6 @@ spec:
 
   # Configuración del balanceador de carga para el API server
   apiServerLoadBalancer:
-    enabled: true
-  disableAPIServerFloatingIP: true
-  disableExternalNetwork: true
+    enabled: false
+  disableAPIServerFloatingIP: false
+  disableExternalNetwork: false
