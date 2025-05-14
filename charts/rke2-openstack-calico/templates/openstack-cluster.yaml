@@ -27,8 +27,8 @@ spec:
   apiServerLoadBalancer:
     enabled: false
   disableAPIServerFloatingIP: true
-  disableExternalNetwork: false
-
-  externalNetwork:
-    filter:
-      name: {{ .Values.infraConfig.netName }}
+  disableExternalNetwork: true
+  apiServerFixedIP: ""
+{{/*  externalNetwork:*/}}
+{{/*    filter:*/}}
+{{/*      name: {{ .Values.infraConfig.netName }}*/}}
