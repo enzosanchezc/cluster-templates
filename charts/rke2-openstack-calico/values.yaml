@@ -59,11 +59,13 @@ infraConfig:
 # ===============
 controlPlaneNodes:
   quantity: 1
-  taints:
+  taints: #"dedicated=large-workloads:NoSchedule"
     - key: node-role.kubernetes.io/control-plane
+      value: true
       effect: NoSchedule
   labels:
     node-role.kubernetes.io/control-plane: ""
+  annotations: {}
   flavorName: m1.large
   imageName: Ubuntu 22.04 LTS
   securityGroups:
