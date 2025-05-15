@@ -7,6 +7,7 @@ metadata:
     cluster.x-k8s.io/cluster-name: {{ .Values.cluster.name }}
     cloud: openstack
     cluster-api.cattle.io/rancher-auto-import: "true"
+  {{- include "rke2-openstack-calico.labels" . | nindent 4 }}
     {{- if .Values.cluster.labels }}
     {{- toYaml .Values.cluster.labels | nindent 4 }}
     {{- end }}

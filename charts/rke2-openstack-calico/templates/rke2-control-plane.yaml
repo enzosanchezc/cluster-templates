@@ -151,6 +151,10 @@ spec:
       {{- with $.Values.cluster.kubeComponents.kubeShceduler.extraArgs }}
         - {{ . }}
       {{- end }}
+    disableComponents:
+      # Componentes de Kubernetes que se desactivarán
+      kubernetesComponents:
+        - "cloudController"
   rolloutStrategy:
     # Type de rollout. Actualmente la única estrategia soportada es "RollingUpdate"
     type: "RollingUpdate"

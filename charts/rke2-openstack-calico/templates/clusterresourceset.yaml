@@ -1,0 +1,12 @@
+apiVersion: addons.cluster.x-k8s.io/v1beta1
+kind: ClusterResourceSet
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-cloud-config
+spec:
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  resources:
+  - kind: Secret
+    name: {{ include "rke2-openstack-calico.name" . }}-cloud-config-secret
+  strategy: Reconcile
