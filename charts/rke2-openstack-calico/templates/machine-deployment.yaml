@@ -8,7 +8,7 @@ metadata:
   namespace: fleet-default
   # Etiquetas opcionales para organizar recursos
   labels:
-  {{- include "rke2-openstack-calico.labels" . | nindent 4 }}
+  {{- include "rke2-openstack-calico.labels" $ | nindent 4 }}
     {{- if $worker.labels }}
     {{ toYaml $worker.labels | nindent 4 }}
     {{- else }}

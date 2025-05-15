@@ -7,4 +7,3 @@ icon: https://media.licdn.com/dms/image/v2/C4D0BAQFQyOXEVSC5qA/company-logo_200_
 annotations:
   catalog.cattle.io/type: cluster-template
   catalog.cattle.io/namespace: fleet-default
-  catalog.cattle.io/certified: rancher
