@@ -37,6 +37,7 @@ spec:
         # Configuración de Kubelet
         kubelet:
           extraArgs:
+          - {{ "provider-id=openstack:///{{ ds.meta_data.uuid }}" }}
           {{- with $.Values.cluster.kubeComponents.kubelet.extraArgs }}
           - {{ . }}
           {{- end }}
