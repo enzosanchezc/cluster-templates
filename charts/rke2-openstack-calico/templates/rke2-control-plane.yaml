@@ -11,6 +11,9 @@ metadata:
 spec:
   version: {{ .Values.cluster.kubernetesVersion }}
   replicas: {{ $replicas }}
+  manifestsConfigMapReference:
+    name: kube-vip-static-pod-{{ .Values.cluster.name }}
+    namespace: fleet-default
   machineTemplate:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
@@ -65,7 +68,7 @@ spec:
     additionalUserData:
       data:
         runcmd: |
-          - echo 'nodo creado con cluster-templates' > /etc/whitestack.metadata
+          - echo "nodo creado con cluster-templates" > /etc/whitestack.metadata
 
   # ServerConfig especifica la configuración específica para los nodos del servidor RKE2
   serverConfig:
@@ -155,6 +158,7 @@ spec:
       # Componentes de Kubernetes que se desactivarán
       kubernetesComponents:
         - "cloudController"
+  registrationMethod: "internal-ips"
   rolloutStrategy:
     # Type de rollout. Actualmente la única estrategia soportada es "RollingUpdate"
     type: "RollingUpdate"
@@ -162,5 +166,3 @@ spec:
     rollingUpdate:
       # MaxSurge es el número máximo de máquinas que pueden ser programadas por encima del número deseado
       maxSurge: 1
-      # MaxUnavailable es el número máximo de máquinas que pueden estar no disponibles durante la actualización
-      maxUnavailable: 0

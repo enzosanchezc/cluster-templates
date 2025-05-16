@@ -1,4 +1,5 @@
 cluster:
+  apiServerVIP: "70.0.0.145"
   name: "prod-cluster" # nombre del cluster
   prefixNode: "ws"
   cloudCredentialSecretName: ""

@@ -28,9 +28,9 @@ spec:
   # Configuración del balanceador de carga para el API server
   apiServerLoadBalancer:
     enabled: false
-  disableAPIServerFloatingIP: false
-  disableExternalNetwork: false
-  #apiServerFixedIP: {{ .Values.controlPlaneNodes.fixedIpApiServer }}
-  externalNetwork:
-    filter:
-      name: {{ .Values.infraConfig.externalNetwork.netName }}
+  disableAPIServerFloatingIP: true
+  disableExternalNetwork: true
+  apiServerFixedIP: {{ .Values.cluster.apiServerVIP }}
+{{/*  externalNetwork:*/}}
+{{/*    filter:*/}}
+{{/*      name: {{ .Values.infraConfig.externalNetwork.netName }}*/}}
