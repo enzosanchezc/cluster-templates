@@ -158,7 +158,7 @@ spec:
       # Componentes de Kubernetes que se desactivarán
       kubernetesComponents:
         - "cloudController"
-  registrationMethod: "internal-ips"
+  registrationMethod: "internal-only-ips"
   rolloutStrategy:
     # Type de rollout. Actualmente la única estrategia soportada es "RollingUpdate"
     type: "RollingUpdate"
