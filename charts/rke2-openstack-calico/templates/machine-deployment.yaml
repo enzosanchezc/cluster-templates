@@ -60,6 +60,4 @@ spec:
         name: {{ $.Values.cluster.name }}-worker-{{ $worker.name }}
       # Tiempo de espera para drenar el nodo antes de eliminarlo
       nodeDrainTimeout: 5m
-      # Política de eliminación de nodos (Delete o Drain)
-      deletePolicy: Drain
 {{- end }}

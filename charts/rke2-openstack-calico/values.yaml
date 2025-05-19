@@ -68,7 +68,7 @@ controlPlaneNodes:
       value: true
       effect: NoSchedule
   labels:
-    node-role.kubernetes.io/control-plane: ""
+    node-role.kubernetes.io/control-plane: "true"
   annotations: {}
   flavorName: m1.large
   imageName: Ubuntu 22.04 LTS

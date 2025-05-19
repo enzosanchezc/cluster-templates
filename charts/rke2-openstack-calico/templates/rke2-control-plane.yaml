@@ -79,7 +79,7 @@ spec:
     # NodeLabels son etiquetas con las que se registrará el kubelet
     nodeLabels:
     {{- if .Values.controlPlaneNodes.labels }}
-      {{- toYaml .Values.controlPlaneNodes.labels | nindent 4 }}
+      - {{ toYaml .Values.controlPlaneNodes.labels | nindent 4 }}
     {{- end }}
 
     # NodeAnnotations son anotaciones que se crean en los nodos después de la fase de bootstrap
@@ -127,44 +127,6 @@ spec:
   serverConfig:
     # Opciones: none, calico, canal, cilium
     cni: "calico"
-    files:
-      - content: |
-          apiVersion: helm.cattle.io/v1
-          kind: HelmChart
-          metadata:
-            name: calico
-            namespace: kube-system
-          spec:
-            chart: tigera-operator
-            repo: https://docs.projectcalico.org/charts
-            version: v3.24.5
-            targetNamespace: tigera-operator
-            createNamespace: true
-            valuesContent: |-
-              installation:
-                calicoNetwork:
-                {{- if eq .Values.cniConfig.bgp true }}
-                  bgp: Enabled
-                {{- end }}
-                {{- if not (hasKey .Values.cniConfig.additionalConfig "mtu") }}
-                  mtu: {{ .Values.cniConfig.mtu | default 1440 }}
-                {{- end }}
-                {{- if not (hasKey .Values.cniConfig.additionalConfig "ipPools") }}
-                  ipPools:
-                    - cidr: {{ .Values.cniConfig.podCIDR }}
-                      disableBGPExport: true
-                      encapsulation: {{ .Values.cniConfig.tunnelProtocol | upper }}
-                    {{- if eq .Values.cniConfig.masquerade true }}
-                      natOutgoing: Enabled
-                    {{- end }}
-                      nodeSelector: all()
-                {{- end }}
-                {{- if .Values.cniConfig.additionalConfig }}
-                  {{- toYaml .Values.cniConfig.additionalConfig | indent 18 }}
-                {{- end }}
-        path: /var/lib/rancher/rke2/server/manifests/calico-custom.yaml
-        owner: root:root
-        permissions: "0644"
     # CNIMultusEnable habilita multus como el primer plugin CNI
     cniMultusEnable: false
 
