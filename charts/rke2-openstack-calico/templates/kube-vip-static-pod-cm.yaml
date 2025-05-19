@@ -18,8 +18,6 @@ data:
         env:
         - name: vip_arp
           value: "true"
-        - name: vip_interface
-          value: eth0
         - name: vip_leaderelection
           value: "true"
         - name: address
