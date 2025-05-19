@@ -21,7 +21,7 @@ spec:
         - network:
             filter:
               name: {{ $.Values.infraConfig.internalNetwork.netName }}
-
+          allowedAddressPairs: {{ .Values.cluster.apiServerVIP }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ .Values.infraConfig.keypairName }}
 
