@@ -200,7 +200,7 @@ questions:
 - variable: controlPlaneNodes.taints
   default:
   label: "Control Plane Nodes Taints"
-  description: "Taints for control plane nodes"
+  description: "Taints for control plane nodes, specified in the format key=value:effect"
   required: false
   type: array
   group: "Control Plane Nodes"
@@ -250,7 +250,7 @@ questions:
 - variable: workerNodes.defaults.taints
   default:
   label: "Worker Nodes Taints"
-  description: "Taints for worker nodes"
+  description: "Taints for worker nodes, specified in the format key=value:effect"
   required: false
   type: array
   group: "Worker Nodes"

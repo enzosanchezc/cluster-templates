@@ -11,7 +11,7 @@ metadata:
   {{- include "rke2-openstack-calico.labels" $ | nindent 4 }}
     {{- if $worker.labels }}
     {{ toYaml $worker.labels | nindent 4 }}
-    {{- else }}
+    {{- else if $.Values.workerNodes.defaults.labels }}
     {{ toYaml $.Values.workerNodes.defaults.labels | nindent 4 }}
     {{- end }}
 spec:
@@ -52,7 +52,7 @@ spec:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: RKE2ConfigTemplate
-          name: {{ $.Values.cluster.name }}-rke2-config
+          name: {{ $.Values.cluster.name }}-{{ $worker.name }}-rke2-config
       # Referencia a la plantilla de infraestructura - define las características de la máquina
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1

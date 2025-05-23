@@ -77,21 +77,13 @@ spec:
   # Esta configuración se aplica a todos los nodos del plano de control
   agentConfig:
     # NodeLabels son etiquetas con las que se registrará el kubelet
-    nodeLabels:
-    {{- if .Values.controlPlaneNodes.labels }}
-      - {{ toYaml .Values.controlPlaneNodes.labels | nindent 4 }}
-    {{- end }}
+    nodeLabels: {{ .Values.controlPlaneNodes.labels | default dict | toYaml | nindent 6 }}
 
     # NodeAnnotations son anotaciones que se crean en los nodos después de la fase de bootstrap
-    nodeAnnotations:
-    {{- if .Values.controlPlaneNodes.annotations }}
-      {{- toYaml .Values.controlPlaneNodes.annotations | nindent 4 }}
-    {{- end }}
+    nodeAnnotations: {{ .Values.controlPlaneNodes.annotations | default dict | toYaml | nindent 6 }}
+
     # NodeTaints son taints con los que se registrará el kubelet
-    nodeTaints:
-    {{- range $index, $tain := .Values.controlPlaneNodes.taints }}
-      - "{{ $tain.key }}={{ $tain.value }}:{{ $tain.effect }}"
-    {{- end }}
+    nodeTaints: {{- if .Values.controlPlaneNodes.taints }}{{- range .Values.controlPlaneNodes.taints }}{{- include "stringToTaintsItem" . | nindent 6 }}{{- end }}{{- else}} {{ list }}{{- end }}
 
     # NodeNamePrefix es un prefijo para el nombre del nodo que CAPI generará
     nodeName: {{ .Values.cluster.prefixNode | default "ws" }}

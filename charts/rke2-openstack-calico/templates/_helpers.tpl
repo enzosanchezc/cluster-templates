@@ -87,3 +87,25 @@ data:
       {{- $config }}
     {{- end }}
 {{- end }}
+
+{{/*
+Create taints item from string
+*/}}
+{{- define "stringToTaintsItem" -}}
+{{- $taintString := . -}}
+{{- $parts := splitList ":" $taintString -}}
+{{- if ne (len $parts) 2 -}}
+{{- fail (printf "Error: Invalid taint string format. Expected 'key=value:effect' or 'key=:effect'. Got '%s'" $taintString) -}}
+{{- end -}}
+{{- $keyValuePart := index $parts 0 -}}
+{{- $effect := index $parts 1 -}}
+{{- $keyValueSplit := splitList "=" $keyValuePart -}}
+{{- $key := index $keyValueSplit 0 -}}
+{{- $value := "" -}}
+{{- if gt (len $keyValueSplit) 1 -}}
+  {{- $value = index $keyValueSplit 1 -}}
+{{- end -}}
+- key: {{ $key | quote }}
+  value: {{ $value | quote }}
+  effect: {{ $effect | quote }}
+{{- end -}}
