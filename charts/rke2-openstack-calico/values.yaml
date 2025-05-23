@@ -1,5 +1,5 @@
 cluster:
-  apiServerVIP: &apiServerVIP "10.100.16.181"
+  apiServerVIP: "10.100.16.181"
   name: "prod-cluster" # nombre del cluster
   prefixNode: "ws"
   cloudCredentialSecretName: ""
@@ -76,9 +76,10 @@ controlPlaneNodes:
       securityGroups:
         - filter:
             name: "default"
+      # La interfaz de management debe tener la IP .cluster.apiServerVIP como allowedAddressPair
       ResolvedPortSpecFields:
         allowedAddressPairs:
-          - ipAddress: *apiServerVIP
+          - ipAddress: "10.100.16.181"
 
 # ===============
 # Nodos Worker
