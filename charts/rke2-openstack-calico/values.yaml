@@ -43,15 +43,9 @@ infraConfig:
   region: RegionOne
   sshUser: ubuntu
   tenantName: hventura
-  username: hventura
-  password:
-    secret:
-      name: passocp2
-      namespace: default
-  caCerts:
-    configMap:
-      name: ""
-      namespace: ""
+  credentialName: ""
+  applicationCredentialName: ""
+  caCerts: ""
 
 # ===============
 # Nodos Control Plane
