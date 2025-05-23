@@ -1,10 +1,11 @@
+{{- range $index, $worker := .Values.workerNodes.nodes }}
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: RKE2ConfigTemplate
 metadata:
-  name: {{ .Values.cluster.name }}-rke2-config
+  name: {{ $.Values.cluster.name }}-{{ $worker.name }}-rke2-config
   namespace: fleet-default
   labels:
-    cluster.x-k8s.io/cluster-name: {{ .Values.cluster.name }}
+    cluster.x-k8s.io/cluster-name: {{ $.Values.cluster.name }}
 spec:
   # Plantilla para la configuración RKE2
   template:
@@ -17,19 +18,30 @@ spec:
         format: "cloud-config"
 
         # Etiquetas para los nodos Kubernetes
-{{/*        nodeLabels:*/}}
-{{/*          - "node.kubernetes.io/worker=true"*/}}
-{{/*          - "node.kubernetes.io/instance-type=large"*/}}
-{{/*          - "workload-type=memory-intensive"*/}}
+        nodeLabels:
+          {{- if $worker.labels }}
+          {{- $worker.labels | toYaml | nindent 10 }}
+          {{- else }}
+          {{- $.Values.workerNodes.defaults.labels | default dict | toYaml | nindent 10 }}
+          {{- end }}
 
-{{/*        # Anotaciones para los nodos Kubernetes*/}}
-{{/*        nodeAnnotations:*/}}
-{{/*          custom.annotation/example: "valor"*/}}
-{{/*          cluster.x-k8s.io/machine-type: "worker-large"*/}}
+        # Anotaciones para los nodos Kubernetes
+        nodeAnnotations:
+          {{- if $worker.annotations }}
+          {{- $worker.annotations | toYaml | nindent 10 }}
+          {{- else }}
+          {{- $.Values.workerNodes.defaults.labels | default dict | toYaml | nindent 10 }}
+          {{- end }}
 
-{{/*        # Taints para los nodos Kubernetes*/}}
-{{/*        nodeTaints:*/}}
-{{/*          - "dedicated=large-workloads:NoSchedule"*/}}
+        # Taints para los nodos Kubernetes
+        nodeTaints:
+          {{- if or $worker.taints $.Values.workerNodes.defaults.taints }}
+          {{- range coalesce $worker.taints $.Values.workerNodes.defaults.taints }}
+          {{- include "stringToTaintsItem" . | nindent 10 }}
+          {{- end }}
+          {{- else }}
+          {{- list | toYaml | nindent 10 }}
+          {{- end }}
 
         # Prefijo para el nombre del nodo
         #nodeName: "worker-large"
@@ -50,3 +62,4 @@ spec:
 
         # Registro privado para imágenes del sistema
         systemDefaultRegistry: ""
+{{- end }}
