@@ -63,21 +63,13 @@ controlPlaneNodes:
   name: cp-node-01
   # ref. https://cluster-api-openstack.sigs.k8s.io/api/v1beta1/api#infrastructure.cluster.x-k8s.io/v1beta1.PortOpts
   ports:
-    - network:
-        filter:
-          name: "PUBLIC"
+    - network: PUBLIC
+      subnet: VPN
       description: "Red privada"
-      fixedIPs:
-        - subnet:
-            filter:
-              name: "VPN"
+      ipAddress: "" # Si se deja vacío, se asigna una IP automáticamente
       securityGroups:
-        - filter:
-            name: "default"
-      # La interfaz de management debe tener la IP .cluster.apiServerVIP como allowedAddressPair
-      ResolvedPortSpecFields:
-        allowedAddressPairs:
-          - ipAddress: "10.100.16.181"
+        - default
+      apiServerPort: true # La interfaz de management debe tener apiServerPort en true para habilitar la Floating IP
 
 # ===============
 # Nodos Worker
@@ -103,17 +95,12 @@ workerNodes:
       flavorName: m1.large
       # ref. https://cluster-api-openstack.sigs.k8s.io/api/v1beta1/api#infrastructure.cluster.x-k8s.io/v1beta1.PortOpts
       ports:
-        - network:
-            filter:
-              name: "PUBLIC"
+        - network: PUBLIC
+          subnet: VPN
           description: "Red privada"
-          fixedIPs:
-            - subnet:
-                filter:
-                  name: "VPN"
+          ipAddress: ""
           securityGroups:
-            - filter:
-                name: "default"
+            - default
 
 cniConfig:
   podCIDR: "10.42.0.0/16"

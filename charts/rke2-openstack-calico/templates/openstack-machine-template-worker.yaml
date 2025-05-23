@@ -19,7 +19,25 @@ spec:
         filter:
           name: {{ $.Values.workerNodes.defaults.imageName }}
       # Configuración de los puertos
-      ports: {{ $worker.ports | default $.Values.workerNodes.defaults.ports | toYaml | nindent 8 }}
+      ports:
+      {{- range $worker.ports }}
+        - network:
+            filter:
+              name: {{ .network }}
+          description: {{ .description }}
+          fixedIPs:
+            - subnet:
+                filter:
+                  name: {{ .subnet }}
+              {{- if .ipAddress }}
+              ipAddress: {{ .ipAddress }}
+              {{- end }}
+          securityGroups:
+          {{- range .securityGroups }}
+            - filter:
+                name: {{ . }}
+          {{- end }}
+      {{- end }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ $.Values.infraConfig.keypairName }}
 
