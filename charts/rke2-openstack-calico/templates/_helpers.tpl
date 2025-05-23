@@ -70,10 +70,7 @@ metadata:
 data:
   cloud.conf:
     {{- if .Values.infraConfig.applicationCredentialName }}
-      {{- $parts := splitList ":" .Values.infraConfig.applicationCredentialName }}
-      {{- $namespace := index $parts 0 }}
-      {{- $secretName := index $parts 1 }}
-      {{- $appCredSecret := (lookup "v1" "Secret" $namespace $secretName) }}
+      {{- $appCredSecret := (lookup "v1" "Secret" .Release.Namespace .Values.infraConfig.applicationCredentialName) }}
       {{- $appCredSecretId := $appCredSecret.data.applicationCredentialId | b64dec }}
       {{- $appCredSecretSecret := $appCredSecret.data.applicationCredentialSecret | b64dec }}
       {{- $config := printf "[Global]\nauth-url=%s\napplication-credential-id=%s\napplication-credential-secret=%s\nregion=%s\ntenant-name=%s\ndomain-name=%s\n" .Values.infraConfig.authUrl $appCredSecretId $appCredSecretSecret .Values.infraConfig.region .Values.infraConfig.tenantName .Values.infraConfig.domainName }}
@@ -81,10 +78,7 @@ data:
       {{- $config := cat " " $config }}
       {{- $config }}
     {{- else if .Values.infraConfig.credentialName }}
-      {{- $parts := splitList ":" .Values.infraConfig.credentialName }}
-      {{- $namespace := index $parts 0 }}
-      {{- $secretName := index $parts 1 }}
-      {{- $credSecret := (lookup "v1" "Secret" $namespace $secretName) }}
+      {{- $credSecret := (lookup "v1" "Secret" .Release.Namespace .Values.infraConfig.credentialName) }}
       {{- $username := $credSecret.data.username | b64dec }}
       {{- $password := $credSecret.data.password | b64dec }}
       {{- $config := printf "[Global]\nauth-url=%s\nusername=%s\npassword=%s\nregion=%s\ntenant-name=%s\ndomain-name=%s\n" .Values.infraConfig.authUrl .Values.infraConfig.username $password .Values.infraConfig.region .Values.infraConfig.tenantName .Values.infraConfig.domainName }}
