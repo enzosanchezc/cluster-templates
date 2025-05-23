@@ -20,7 +20,7 @@ questions:
   label: "Additional Manifests"
   description: "Additional manifests to be applied to the cluster"
   required: false
-  type: multiline
+  type: yaml
   group: "Additional Manifests"
 - variable: cluster.rke2Config.agentEnvVars
   default:
@@ -368,7 +368,7 @@ questions:
     label: "Longhorn Custom Values"
     description: "Custom values for Longhorn"
     required: false
-    type: multiline
+    type: yaml
     group: "Storage"
 - variable: storage.openebs.enabled
   default: false
@@ -447,7 +447,7 @@ questions:
     label: "OpenEBS Custom Values"
     description: "Custom values for OpenEBS"
     required: false
-    type: multiline
+    type: yaml
     group: "Storage"
 - variable: storage.cinder.enabled
   default: true
@@ -526,7 +526,7 @@ questions:
     label: "Cinder Custom Values"
     description: "Custom values for Cinder"
     required: false
-    type: multiline
+    type: yaml
     group: "Storage"
 - variable: storage.ceph.enabled
   default: true
@@ -612,7 +612,7 @@ questions:
     label: "Ceph Custom Values"
     description: "Custom values for Ceph"
     required: false
-    type: multiline
+    type: yaml
     group: "Storage"
 - variable: logging.enabled
   default: true
@@ -642,7 +642,7 @@ questions:
     label: "Logging Custom Values"
     description: "Custom values for logging"
     required: false
-    type: multiline
+    type: yaml
     group: "Logging"
 - variable: metallb.enabled
   default: true
@@ -658,7 +658,7 @@ questions:
     label: "MetalLB Custom Values"
     description: "Custom values for MetalLB"
     required: false
-    type: multiline
+    type: yaml
     group: "Load Balancer"
 - variable: monitoring.enabled
   default: false
@@ -718,7 +718,7 @@ questions:
     label: "Ingress Nginx Custom Values"
     description: "Custom values for Ingress Nginx"
     required: false
-    type: multiline
+    type: yaml
     group: "Ingress"
 - variable: kubevirt.enabled
   default: true
@@ -741,7 +741,7 @@ questions:
     label: "KubeVirt Custom Values"
     description: "Custom values for KubeVirt"
     required: false
-    type: multiline
+    type: yaml
     group: "KubeVirt"
 - variable: sriovOperator.enabled
   default: true
@@ -792,7 +792,7 @@ questions:
     label: "SR-IOV Operator Custom Values"
     description: "Custom values for SR-IOV operator"
     required: false
-    type: multiline
+    type: yaml
     group: "SR-IOV Operator"
 - variable: nodeConfigOperator.enabled
   default: true
@@ -822,7 +822,7 @@ questions:
     label: "Node Config Operator Custom Values"
     description: "Custom values for node config operator"
     required: false
-    type: multiline
+    type: yaml
     group: "Node Config Operator"
 - variable: nmstateOperator.enabled
   default: true
@@ -838,7 +838,7 @@ questions:
     label: "NMState Operator Custom Values"
     description: "Custom values for NMState operator"
     required: false
-    type: multiline
+    type: yaml
     group: "NMState Operator"
 - variable: sdnController.enabled
   default: true
@@ -854,7 +854,7 @@ questions:
     label: "SDN Controller Custom Values"
     description: "Custom values for SDN controller"
     required: false
-    type: multiline
+    type: yaml
     group: "SDN Controller"
 - variable: ntp.enabled
   default: true
@@ -870,7 +870,7 @@ questions:
     label: "NTP Custom Values"
     description: "Custom values for NTP"
     required: false
-    type: multiline
+    type: yaml
     group: "NTP"
 - variable: x509CertExporter.enabled
   default: true
@@ -886,5 +886,5 @@ questions:
     label: "x509 Cert Exporter Custom Values"
     description: "Custom values for x509 cert exporter"
     required: false
-    type: multiline
+    type: yaml
     group: "x509 Cert Exporter"
