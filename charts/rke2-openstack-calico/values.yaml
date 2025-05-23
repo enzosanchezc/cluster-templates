@@ -43,8 +43,7 @@ infraConfig:
   region: RegionOne
   sshUser: ubuntu
   tenantName: hventura
-  credentialName: ""
-  applicationCredentialName: ""
+  applicationCredentialName: "fleet-default:whitecloud-application-credential"
   caCerts: ""
 
 # ===============
