@@ -18,7 +18,7 @@ cluster:
       # - cloud-provider=external
     kubeApiServer:
       extraArgs: [] # extra args para el kube apiserver. https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/
-    kubeShceduler:
+    kubeScheduler:
       extraArgs: [] # extra args para el kube scheduler. https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/
     kubeProxy:
       extraArgs: [] # extra args para el kube proxy. https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/
