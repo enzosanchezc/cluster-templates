@@ -17,7 +17,7 @@ spec:
       image:
         filter:
           name: {{ .Values.controlPlaneNodes.imageName }}
-      ports: {{ .Values.controlPlaneNodes.ports }}
+      ports: {{ .Values.controlPlaneNodes.ports | toYaml | nindent 8 }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ .Values.infraConfig.keypairName }}
 
