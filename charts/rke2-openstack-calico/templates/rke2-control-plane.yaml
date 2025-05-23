@@ -166,7 +166,7 @@ spec:
     # KubeScheduler define la configuración personalizada opcional del Kube Scheduler
     kubeScheduler:
       extraArgs:
-      {{- with $.Values.cluster.kubeComponents.kubeShceduler.extraArgs }}
+      {{- with $.Values.cluster.kubeComponents.kubeScheduler.extraArgs }}
         - {{ . }}
       {{- end }}
     disableComponents:
