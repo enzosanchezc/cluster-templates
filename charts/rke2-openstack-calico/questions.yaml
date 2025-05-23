@@ -13,7 +13,7 @@ questions:
   label: "API Server VIP"
   description: "Floating IP for the API server"
   required: true
-  type: string
+  type: ipaddr
   group: "General"
 - variable: cluster.additionalManifests
   default:
@@ -27,21 +27,21 @@ questions:
   label: "Agent Environment Variables"
   description: "Environment variables to be set for the agent"
   required: false
-  type: labels
+  type: questionMap
   group: "Agent Environment Vars"
 - variable: cluster.labels
   default:
   label: "Labels"
   description: "Labels to be applied to the cluster"
   required: false
-  type: labels
+  type: questionMap
   group: "Labels & Annotations"
 - variable: cluster.annotations
   default:
   label: "Annotations"
   description: "Annotations to be applied to the cluster"
   required: false
-  type: annotations
+  type: questionMap
   group: "Labels & Annotations"
 - variable: cniConfig.podCIDR
   default: "10.42.0.0/16"
@@ -85,47 +85,40 @@ questions:
   required: true
   type: boolean
   group: "Networking"
-- variable: cniConfig.additionalConfig
-  default:
-  label: "Additional Config"
-  description: "Additional configuration for Calico"
-  required: false
-  type: multiline
-  group: "Networking"
 - variable: cluster.kubeComponents.kubelet.extraArgs
   default:
   label: "Kubelet Extra Args"
   description: "Additional arguments for the kubelet"
   required: false
-  type: listofstrings
+  type: array
   group: "Kubelet Configuration"
 - variable: cluster.kubeComponents.kubeControllerManager.extraArgs
   default:
   label: "Kube Controller Manager Extra Args"
   description: "Additional arguments for the kube controller manager"
   required: false
-  type: listofstrings
+  type: array
   group: "Kube Controller Manager Configuration"
 - variable: cluster.kubeComponents.kubeApiServer.extraArgs
   default:
   label: "Kube API Server Extra Args"
   description: "Additional arguments for the kube API server"
   required: false
-  type: listofstrings
+  type: array
   group: "Kube API Server Configuration"
 - variable: cluster.kubeComponents.kubeScheduler.extraArgs
   default:
   label: "Kube Scheduler Extra Args"
   description: "Additional arguments for the kube scheduler"
   required: false
-  type: listofstrings
+  type: array
   group: "Kube Scheduler Configuration"
 - variable: cluster.kubeComponents.kubeProxy.extraArgs
   default:
   label: "Kube Proxy Extra Args"
   description: "Additional arguments for the kube proxy"
   required: false
-  type: listofstrings
+  type: array
   group: "Kube Proxy Configuration"
 - variable: infraConfig.authUrl
   default:
@@ -139,7 +132,7 @@ questions:
   label: "OpenStack Availability Zones"
   description: "OpenStack availability zones"
   required: true
-  type: listofstrings
+  type: array
   group: "OpenStack Configuration"
 - variable: infraConfig.domainName
   default: "Default"
@@ -181,21 +174,21 @@ questions:
   label: "OpenStack Application Credential Name"
   description: "OpenStack application credential name."
   required: false
-  type: reference_secret
+  type: secret
   group: "OpenStack Configuration"
 - variable: infraConfig.credentialName
   default:
   label: "OpenStack Credential Name"
   description: "OpenStack credential name. It's preferable to use application credentials"
   required: false
-  type: reference_secret
+  type: secret
   group: "OpenStack Configuration"
 - variable: infraConfig.caCerts
   default:
   label: "OpenStack CA Certs"
   description: "OpenStack CA certificates"
   required: false
-  type: reference_configmap
+  type: configmap
   group: "OpenStack Configuration"
 - variable: controlPlaneNodes.quantity
   default: 3
@@ -209,21 +202,21 @@ questions:
   label: "Control Plane Nodes Taints"
   description: "Taints for control plane nodes"
   required: false
-  type: tolerations
+  type: array
   group: "Control Plane Nodes"
 - variable: controlPlaneNodes.labels
   default:
   label: "Control Plane Nodes Labels"
   description: "Labels for control plane nodes"
   required: false
-  type: labels
+  type: questionMap
   group: "Control Plane Nodes"
 - variable: controlPlaneNodes.annotations
   default:
   label: "Control Plane Nodes Annotations"
   description: "Annotations for control plane nodes"
   required: false
-  type: annotations
+  type: questionMap
   group: "Control Plane Nodes"
 - variable: controlPlaneNodes.flavorName
   default: "m1.large"
@@ -245,7 +238,7 @@ questions:
   label: "Control Plane Nodes Security Groups"
   description: "Security groups for control plane nodes"
   required: false
-  type: listofstrings
+  type: array
   group: "Control Plane Nodes"
 - variable: workerNodes.defaults.quantity
   default: 2
@@ -259,21 +252,21 @@ questions:
   label: "Worker Nodes Taints"
   description: "Taints for worker nodes"
   required: false
-  type: tolerations
+  type: array
   group: "Worker Nodes"
 - variable: workerNodes.defaults.labels
   default:
   label: "Worker Nodes Labels"
   description: "Labels for worker nodes"
   required: false
-  type: labels
+  type: questionMap
   group: "Worker Nodes"
 - variable: workerNodes.defaults.annotations
   default:
   label: "Worker Nodes Annotations"
   description: "Annotations for worker nodes"
   required: false
-  type: annotations
+  type: questionMap
   group: "Worker Nodes"
 - variable: workerNodes.defaults.flavorName
   default: "m1.large"
@@ -296,7 +289,7 @@ questions:
   label: "Worker Nodes Security Groups"
   description: "Security groups for worker nodes"
   required: false
-  type: listofstrings
+  type: array
   group: "Worker Nodes"
 - variable: storage.longhorn.enabled
   default: false
@@ -556,7 +549,7 @@ questions:
     label: "Ceph Monitor List"
     description: "Ceph monitor list"
     required: true
-    type: listofstrings
+    type: array
     group: "Storage"
   - variable: storage.ceph.defaultValues.pool
     default: "volumes"
