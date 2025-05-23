@@ -1,0 +1,897 @@
+categories:
+- clusters
+namespace: fleet-default
+questions:
+- variable: cluster.name
+  default: mycluster
+  label: "Cluster Name"
+  required: true
+  type: string
+  group: "General"
+- variable: cluster.apiServerVIP
+  default:
+  label: "API Server VIP"
+  description: "Floating IP for the API server"
+  required: true
+  type: string
+  group: "General"
+- variable: cluster.additionalManifests
+  default:
+  label: "Additional Manifests"
+  description: "Additional manifests to be applied to the cluster"
+  required: false
+  type: multiline
+  group: "Additional Manifests"
+- variable: cluster.rke2Config.agentEnvVars
+  default:
+  label: "Agent Environment Variables"
+  description: "Environment variables to be set for the agent"
+  required: false
+  type: labels
+  group: "Agent Environment Vars"
+- variable: cluster.labels
+  default:
+  label: "Labels"
+  description: "Labels to be applied to the cluster"
+  required: false
+  type: labels
+  group: "Labels & Annotations"
+- variable: cluster.annotations
+  default:
+  label: "Annotations"
+  description: "Annotations to be applied to the cluster"
+  required: false
+  type: annotations
+  group: "Labels & Annotations"
+- variable: cniConfig.podCIDR
+  default: "10.42.0.0/16"
+  label: "Cluster CIDR"
+  description: "CIDR for the pod network"
+  required: true
+  type: string
+  group: "Networking"
+- variable: cniConfig.serviceCIDR
+  default: "10.42.0.0/16"
+  label: "Service CIDR"
+  description: "CIDR for the service network"
+  required: true
+  type: string
+  group: "Networking"
+- variable: cniConfig.mtu
+  default: 1440
+  label: "MTU"
+  description: "MTU for the Calico network"
+  required: true
+  type: int
+  group: "Networking"
+- variable: cniConfig.tunnelProtocol
+  default: "IPIP"
+  label: "Tunnel Protocol"
+  description: "Tunnel protocol for Calico"
+  required: true
+  type: string
+  group: "Networking"
+- variable: cniConfig.masquerade
+  default: true
+  label: "Masquerade"
+  description: "Enable masquerading for Calico"
+  required: true
+  type: boolean
+  group: "Networking"
+- variable: cniConfig.bgp
+  default: false
+  label: "BGP"
+  description: "Enable BGP for Calico"
+  required: true
+  type: boolean
+  group: "Networking"
+- variable: cniConfig.additionalConfig
+  default:
+  label: "Additional Config"
+  description: "Additional configuration for Calico"
+  required: false
+  type: multiline
+  group: "Networking"
+- variable: cluster.kubeComponents.kubelet.extraArgs
+  default:
+  label: "Kubelet Extra Args"
+  description: "Additional arguments for the kubelet"
+  required: false
+  type: listofstrings
+  group: "Kubelet Configuration"
+- variable: cluster.kubeComponents.kubeControllerManager.extraArgs
+  default:
+  label: "Kube Controller Manager Extra Args"
+  description: "Additional arguments for the kube controller manager"
+  required: false
+  type: listofstrings
+  group: "Kube Controller Manager Configuration"
+- variable: cluster.kubeComponents.kubeApiServer.extraArgs
+  default:
+  label: "Kube API Server Extra Args"
+  description: "Additional arguments for the kube API server"
+  required: false
+  type: listofstrings
+  group: "Kube API Server Configuration"
+- variable: cluster.kubeComponents.kubeScheduler.extraArgs
+  default:
+  label: "Kube Scheduler Extra Args"
+  description: "Additional arguments for the kube scheduler"
+  required: false
+  type: listofstrings
+  group: "Kube Scheduler Configuration"
+- variable: cluster.kubeComponents.kubeProxy.extraArgs
+  default:
+  label: "Kube Proxy Extra Args"
+  description: "Additional arguments for the kube proxy"
+  required: false
+  type: listofstrings
+  group: "Kube Proxy Configuration"
+- variable: infraConfig.authUrl
+  default:
+  label: "OpenStack Auth URL"
+  description: "OpenStack authentication URL"
+  required: true
+  type: string
+  group: "OpenStack Configuration"
+- variable: infraConfig.availabilityZones
+  default:
+  label: "OpenStack Availability Zones"
+  description: "OpenStack availability zones"
+  required: true
+  type: listofstrings
+  group: "OpenStack Configuration"
+- variable: infraConfig.domainName
+  default: "Default"
+  label: "OpenStack Domain Name"
+  description: "OpenStack domain name"
+  required: true
+  type: string
+  group: "OpenStack Configuration"
+- variable: infraConfig.keypairName
+  default:
+  label: "OpenStack Keypair Name"
+  description: "OpenStack keypair name"
+  required: true
+  type: string
+  group: "OpenStack Configuration"
+- variable: infraConfig.region
+  default: "RegionOne"
+  label: "OpenStack Region"
+  description: "OpenStack region"
+  required: true
+  type: string
+  group: "OpenStack Configuration"
+- variable: infraConfig.sshUser
+  default: "ubuntu"
+  label: "OpenStack SSH User"
+  description: "OpenStack SSH user"
+  required: true
+  type: string
+  group: "OpenStack Configuration"
+- variable: infraConfig.tenantName
+  default:
+  label: "OpenStack Tenant Name"
+  description: "OpenStack tenant name"
+  required: true
+  type: string
+  group: "OpenStack Configuration"
+- variable: infraConfig.applicationCredentialName
+  default:
+  label: "OpenStack Application Credential Name"
+  description: "OpenStack application credential name."
+  required: false
+  type: reference_secret
+  group: "OpenStack Configuration"
+- variable: infraConfig.credentialName
+  default:
+  label: "OpenStack Credential Name"
+  description: "OpenStack credential name. It's preferable to use application credentials"
+  required: false
+  type: reference_secret
+  group: "OpenStack Configuration"
+- variable: infraConfig.caCerts
+  default:
+  label: "OpenStack CA Certs"
+  description: "OpenStack CA certificates"
+  required: false
+  type: reference_configmap
+  group: "OpenStack Configuration"
+- variable: controlPlaneNodes.quantity
+  default: 3
+  label: "Control Plane Nodes Quantity"
+  description: "Number of control plane nodes"
+  required: true
+  type: int
+  group: "Control Plane Nodes"
+- variable: controlPlaneNodes.taints
+  default:
+  label: "Control Plane Nodes Taints"
+  description: "Taints for control plane nodes"
+  required: false
+  type: tolerations
+  group: "Control Plane Nodes"
+- variable: controlPlaneNodes.labels
+  default:
+  label: "Control Plane Nodes Labels"
+  description: "Labels for control plane nodes"
+  required: false
+  type: labels
+  group: "Control Plane Nodes"
+- variable: controlPlaneNodes.annotations
+  default:
+  label: "Control Plane Nodes Annotations"
+  description: "Annotations for control plane nodes"
+  required: false
+  type: annotations
+  group: "Control Plane Nodes"
+- variable: controlPlaneNodes.flavorName
+  default: "m1.large"
+  label: "Control Plane Nodes Flavor Name"
+  description: "Flavor name for control plane nodes"
+  required: true
+  type: string
+  group: "Control Plane Nodes"
+- variable: controlPlaneNodes.imageName
+  default: "Ubuntu 22.04 LTS"
+  label: "Control Plane Nodes Image Name"
+  description: "Image name for control plane nodes"
+  required: true
+  type: string
+  group: "Control Plane Nodes"
+- variable: controlPlaneNodes.securityGroups
+  default:
+  - all
+  label: "Control Plane Nodes Security Groups"
+  description: "Security groups for control plane nodes"
+  required: false
+  type: listofstrings
+  group: "Control Plane Nodes"
+- variable: workerNodes.defaults.quantity
+  default: 2
+  label: "Number of worker nodes"
+  description: "Worker nodes default pool size"
+  required: true
+  type: int
+  group: "Worker Nodes"
+- variable: workerNodes.defaults.taints
+  default:
+  label: "Worker Nodes Taints"
+  description: "Taints for worker nodes"
+  required: false
+  type: tolerations
+  group: "Worker Nodes"
+- variable: workerNodes.defaults.labels
+  default:
+  label: "Worker Nodes Labels"
+  description: "Labels for worker nodes"
+  required: false
+  type: labels
+  group: "Worker Nodes"
+- variable: workerNodes.defaults.annotations
+  default:
+  label: "Worker Nodes Annotations"
+  description: "Annotations for worker nodes"
+  required: false
+  type: annotations
+  group: "Worker Nodes"
+- variable: workerNodes.defaults.flavorName
+  default: "m1.large"
+  label: "Worker Nodes Flavor Name"
+  description: "Flavor name for worker nodes"
+  required: true
+  type: string
+  group: "Worker Nodes"
+- variable: workerNodes.defaults.imageName
+  default: "Ubuntu 22.04 LTS"
+  label: "Worker Nodes Image Name"
+  description: "Image name for worker nodes"
+  required: true
+  type: string
+  group: "Worker Nodes"
+- variable: workerNodes.defaults.securityGroups
+  default:
+  - default
+  - all
+  label: "Worker Nodes Security Groups"
+  description: "Security groups for worker nodes"
+  required: false
+  type: listofstrings
+  group: "Worker Nodes"
+- variable: storage.longhorn.enabled
+  default: false
+  label: "Enable Longhorn"
+  description: "Enable Longhorn storage"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Storage"
+  subquestions:
+  - variable: storage.longhorn.defaultValues.persistence.defaultClass
+    default: false
+    label: "Default Storage Class"
+    description: "Set Longhorn as the default storage class"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.defaultSettings.replicaSoftAntiAffinity
+    default: false
+    label: "Replica Soft Anti-Affinity"
+    description: "Enable replica soft anti-affinity"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.defaultSettings.autoDeletePodWhenVolumeDetachedUnexpectedly
+    default: true
+    label: "Auto Delete Pod When Volume Detached Unexpectedly"
+    description: "Automatically delete the pod when the volume is detached unexpectedly"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.defaultSettings.allowVolumeCreationWithDegradedAvailability
+    default: false
+    label: "Allow Volume Creation with Degraded Availability"
+    description: "Allow volume creation with degraded availability"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.defaultSettings.replicaAutoBalance
+    default: "least-effort"
+    label: "Replica Auto Balance"
+    description: "Replica auto-balance strategy"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.storageMinimalAvailablePercentage
+    default: 25
+    label: "Storage Minimal Available Percentage"
+    description: "Minimal available percentage for storage"
+    required: true
+    type: int
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.storageOverProvisioningPercentage
+    default: 200
+    label: "Storage Over-Provisioning Percentage"
+    description: "Over-provisioning percentage for storage"
+    required: true
+    type: int
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.defaultDataPath
+    default: "/var/lib/longhorn/"
+    label: "Default Data Path"
+    description: "Default data path for Longhorn"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.longhorn.defaultValues.nodeDownPodDeletionPolicy
+    default: "delete-both-statefulset-and-deployment-pod"
+    label: "Node Down Pod Deletion Policy"
+    description: "Pod deletion policy when a node is down"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.longhorn.customValues
+    default:
+    label: "Longhorn Custom Values"
+    description: "Custom values for Longhorn"
+    required: false
+    type: multiline
+    group: "Storage"
+- variable: storage.openebs.enabled
+  default: false
+  label: "Enable OpenEBS"
+  description: "Enable OpenEBS storage"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Storage"
+  subquestions:
+  - variable: storage.openebs.defaultValues.apiserver.enabled
+    default: false
+    label: "Enable OpenEBS API Server"
+    description: "Enable OpenEBS API server"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.localprovisioner.replicas
+    default: 2
+    label: "OpenEBS Local Provisioner Replicas"
+    description: "Number of replicas for OpenEBS local provisioner"
+    required: true
+    type: int
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.ndm.enabled
+    default: false
+    label: "Enable OpenEBS NDM"
+    description: "Enable OpenEBS Node Disk Manager"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.ndmOperator.enabled
+    default: false
+    label: "Enable OpenEBS NDM Operator"
+    description: "Enable OpenEBS NDM operator"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.analytics.enabled
+    default: false
+    label: "Enable OpenEBS Analytics"
+    description: "Enable OpenEBS analytics"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.webhook.enabled
+    default: false
+    label: "Enable OpenEBS Webhook"
+    description: "Enable OpenEBS webhook"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.snapshotOperator.enabled
+    default: false
+    label: "Enable OpenEBS Snapshot Operator"
+    description: "Enable OpenEBS snapshot operator"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.policies.monitoring.enabled
+    default: false
+    label: "Enable OpenEBS Monitoring"
+    description: "Enable OpenEBS monitoring"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.defaultValues.provisioner.enabled
+    default: false
+    label: "Enable OpenEBS Provisioner"
+    description: "Enable OpenEBS provisioner"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.openebs.customValues
+    default:
+    label: "OpenEBS Custom Values"
+    description: "Custom values for OpenEBS"
+    required: false
+    type: multiline
+    group: "Storage"
+- variable: storage.cinder.enabled
+  default: true
+  label: "Enable Cinder"
+  description: "Enable Cinder storage"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Storage"
+  subquestions:
+  - variable: storage.cinder.defaultValues.authUrl
+    default:
+    label: "Cinder Auth URL"
+    description: "Cinder authentication URL"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.username
+    default:
+    label: "Cinder Username"
+    description: "Cinder username"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.password 
+    default:
+    label: "Cinder Password"
+    description: "Cinder password"
+    required: true
+    type: password
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.region
+    default: "RegionOne"
+    label: "Cinder Region"
+    description: "Cinder region"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.tenantID
+    default:
+    label: "Cinder Tenant ID"
+    description: "Cinder tenant ID"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.tenantName
+    default:
+    label: "Cinder Tenant Name"
+    description: "Cinder tenant name"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.domainName
+    default: "Default"
+    label: "Cinder Domain Name"
+    description: "Cinder domain name"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.domainID
+    default: "default"
+    label: "Cinder Domain ID"
+    description: "Cinder domain ID"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.cinder.defaultValues.caCert
+    default:
+    label: "Cinder CA Cert"
+    description: "Cinder CA certificate"
+    required: true
+    type: multiline
+    group: "Storage"
+  - variable: storage.cinder.customValues
+    default:
+    label: "Cinder Custom Values"
+    description: "Custom values for Cinder"
+    required: false
+    type: multiline
+    group: "Storage"
+- variable: storage.ceph.enabled
+  default: true
+  label: "Enable Ceph"
+  description: "Enable Ceph storage"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Storage"
+  subquestions:
+  - variable: storage.ceph.defaultValues.clusterID
+    default:
+    label: "Ceph Cluster ID"
+    description: "Ceph cluster ID"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.monitorList
+    default:
+    label: "Ceph Monitor List"
+    description: "Ceph monitor list"
+    required: true
+    type: listofstrings
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.pool
+    default: "volumes"
+    label: "Ceph Pool"
+    description: "Ceph pool name"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.userID
+    default:
+    label: "Ceph User ID"
+    description: "Ceph user ID"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.userKey
+    default:
+    label: "Ceph User Key"
+    description: "Ceph user key"
+    required: true
+    type: password
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.provisionerReplicaCount
+    default: 3
+    label: "Ceph Provisioner Replica Count"
+    description: "Number of replicas for Ceph provisioner"
+    required: true
+    type: int
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.reclaimPolicy
+    default: "Retain"
+    label: "Ceph Reclaim Policy"
+    description: "Reclaim policy for Ceph volumes"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.csiRBD.enabled
+    default: false
+    label: "Enable Ceph CSI RBD"
+    description: "Enable Ceph CSI RBD"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.csiFS.enabled
+    default: false
+    label: "Enable Ceph CSI FS"
+    description: "Enable Ceph CSI FS"
+    required: true
+    type: boolean
+    group: "Storage"
+  - variable: storage.ceph.defaultValues.csiFS.fsName
+    default: "whitemist-fs"
+    label: "Ceph CSI FS Name"
+    description: "Ceph CSI FS name"
+    required: true
+    type: string
+    group: "Storage"
+  - variable: storage.ceph.customValues
+    default:
+    label: "Ceph Custom Values"
+    description: "Custom values for Ceph"
+    required: false
+    type: multiline
+    group: "Storage"
+- variable: logging.enabled
+  default: true
+  label: "Enable Logging"
+  description: "Enable logging"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Logging"
+  subquestions:
+  - variable: logging.clusterOutputs.server.host
+    default:
+    label: "Logging Server Host"
+    description: "Logging server host"
+    required: true
+    type: string
+    group: "Logging"
+  - variable: logging.clusterOutputs.server.port
+    default: 24224
+    label: "Logging Server Port"
+    description: "Logging server port"
+    required: true
+    type: int
+    group: "Logging"
+  - variable: logging.customValues
+    default:
+    label: "Logging Custom Values"
+    description: "Custom values for logging"
+    required: false
+    type: multiline
+    group: "Logging"
+- variable: metallb.enabled
+  default: true
+  label: "Enable MetalLB"
+  description: "Enable MetalLB"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Load Balancer"
+  subquestions:
+  - variable: metallb.customValues
+    default:
+    label: "MetalLB Custom Values"
+    description: "Custom values for MetalLB"
+    required: false
+    type: multiline
+    group: "Load Balancer"
+- variable: monitoring.enabled
+  default: false
+  label: "Enable Monitoring"
+  description: "Enable monitoring"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Monitoring"
+  subquestions:
+  - variable: monitoring.thanos.objectStorage.accessKey
+    default:
+    label: "Thanos Object Storage Access Key"
+    description: "Thanos object storage access key"
+    required: true
+    type: string
+    group: "Monitoring"
+  - variable: monitoring.thanos.objectStorage.bucket
+    default:
+    label: "Thanos Object Storage Bucket"
+    description: "Thanos object storage bucket"
+    required: true
+    type: string
+    group: "Monitoring"
+  - variable: monitoring.thanos.objectStorage.endpoint
+    default:
+    label: "Thanos Object Storage Endpoint"
+    description: "Thanos object storage endpoint"
+    required: true
+    type: string
+    group: "Monitoring"
+  - variable: monitoring.thanos.objectStorage.secretKey
+    default:
+    label: "Thanos Object Storage Secret Key"
+    description: "Thanos object storage secret key"
+    required: true
+    type: password
+    group: "Monitoring"
+  - variable: monitoring.thanosIngress.host
+    default:
+    label: "Thanos Ingress Host"
+    description: "Thanos ingress host"
+    required: true
+    type: string
+    group: "Monitoring"
+- variable: ingressNginx.enabled
+  default: true
+  label: "Enable Ingress Nginx"
+  description: "Enable Ingress Nginx"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Ingress"
+  subquestions:
+  - variable: ingressNginx.customValues
+    default:
+    label: "Ingress Nginx Custom Values"
+    description: "Custom values for Ingress Nginx"
+    required: false
+    type: multiline
+    group: "Ingress"
+- variable: kubevirt.enabled
+  default: true
+  label: "Enable KubeVirt"
+  description: "Enable KubeVirt"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "KubeVirt"
+  subquestions:
+  - variable: kubevirt.emulation
+    default: true
+    label: "Enable Emulation"
+    description: "Enable emulation for KubeVirt"
+    required: true
+    type: boolean
+    group: "KubeVirt"
+  - variable: kubevirt.customValues
+    default:
+    label: "KubeVirt Custom Values"
+    description: "Custom values for KubeVirt"
+    required: false
+    type: multiline
+    group: "KubeVirt"
+- variable: sriovOperator.enabled
+  default: true
+  label: "Enable SR-IOV Operator"
+  description: "Enable SR-IOV operator"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "SR-IOV Operator"
+  subquestions:
+  - variable: sriovOperator.defaultValues.operator.resourcePrefix
+    default: "intel.com"
+    label: "SR-IOV Operator Resource Prefix"
+    description: "Resource prefix for SR-IOV operator"
+    required: true
+    type: string
+    group: "SR-IOV Operator"
+  - variable: sriovOperator.defaultValues.sriovOperatorConfig.deploy
+    default: true
+    label: "Deploy SR-IOV Operator Config"
+    description: "Deploy SR-IOV operator config"
+    required: true
+    type: boolean
+    group: "SR-IOV Operator"
+  - variable: sriovOperator.defaultValues.sriovOperatorConfig.logLevel
+    default: 2
+    label: "SR-IOV Operator Log Level"
+    description: "Log level for SR-IOV operator"
+    required: true
+    type: int
+    group: "SR-IOV Operator"
+  - variable: sriovOperator.defaultValues.sriovOperatorConfig.disableDrain
+    default: false
+    label: "Disable Drain"
+    description: "Disable drain for SR-IOV operator"
+    required: true
+    type: boolean
+    group: "SR-IOV Operator"
+  - variable: sriovOperator.defaultValues.sriovOperatorConfig.configurationMode
+    default: "daemon"
+    label: "SR-IOV Operator Configuration Mode"
+    description: "Configuration mode for SR-IOV operator"
+    required: true
+    type: string
+    group: "SR-IOV Operator"
+  - variable: sriovOperator.customValues
+    default:
+    label: "SR-IOV Operator Custom Values"
+    description: "Custom values for SR-IOV operator"
+    required: false
+    type: multiline
+    group: "SR-IOV Operator"
+- variable: nodeConfigOperator.enabled
+  default: true
+  label: "Enable Node Config Operator"
+  description: "Enable node config operator"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "Node Config Operator"
+  subquestions:
+  - variable: nodeConfigOperator.defaultValues.managerConfig.aptEnabled
+    default: true
+    label: "Node Config Operator Apt Enabled"
+    description: "Enable apt for node config operator"
+    required: true
+    type: boolean
+    group: "Node Config Operator"
+  - variable: nodeConfigOperator.defaultValues.managerConfig.hostfsEnabled
+    default: true
+    label: "Node Config Operator HostFS Enabled"
+    description: "Enable host filesystem for node config operator"
+    required: true
+    type: boolean
+    group: "Node Config Operator"
+  - variable: nodeConfigOperator.customValues
+    default:
+    label: "Node Config Operator Custom Values"
+    description: "Custom values for node config operator"
+    required: false
+    type: multiline
+    group: "Node Config Operator"
+- variable: nmstateOperator.enabled
+  default: true
+  label: "Enable NMState Operator"
+  description: "Enable NMState operator"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "NMState Operator"
+  subquestions:
+  - variable: nmstateOperator.customValues
+    default:
+    label: "NMState Operator Custom Values"
+    description: "Custom values for NMState operator"
+    required: false
+    type: multiline
+    group: "NMState Operator"
+- variable: sdnController.enabled
+  default: true
+  label: "Enable SDN Controller"
+  description: "Enable SDN controller"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "SDN Controller"
+  subquestions:
+  - variable: sdnController.customValues
+    default:
+    label: "SDN Controller Custom Values"
+    description: "Custom values for SDN controller"
+    required: false
+    type: multiline
+    group: "SDN Controller"
+- variable: ntp.enabled
+  default: true
+  label: "Enable NTP"
+  description: "Enable NTP"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "NTP"
+  subquestions:
+  - variable: ntp.customValues
+    default:
+    label: "NTP Custom Values"
+    description: "Custom values for NTP"
+    required: false
+    type: multiline
+    group: "NTP"
+- variable: x509CertExporter.enabled
+  default: true
+  label: "Enable x509 Cert Exporter"
+  description: "Enable x509 cert exporter"
+  required: true
+  type: boolean
+  show_subquestion_if: true
+  group: "x509 Cert Exporter"
+  subquestions:
+  - variable: x509CertExporter.customValues
+    default:
+    label: "x509 Cert Exporter Custom Values"
+    description: "Custom values for x509 cert exporter"
+    required: false
+    type: multiline
+    group: "x509 Cert Exporter"
