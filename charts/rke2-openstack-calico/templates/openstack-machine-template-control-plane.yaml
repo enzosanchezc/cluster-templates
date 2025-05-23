@@ -17,12 +17,7 @@ spec:
       image:
         filter:
           name: {{ .Values.controlPlaneNodes.imageName }}
-      ports:
-        - network:
-            filter:
-              name: {{ $.Values.infraConfig.internalNetwork.netName }}
-          allowedAddressPairs:
-          - ipAddress: {{ .Values.cluster.apiServerVIP }}
+      ports: {{ .Values.controlPlaneNodes.ports }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ .Values.infraConfig.keypairName }}
 

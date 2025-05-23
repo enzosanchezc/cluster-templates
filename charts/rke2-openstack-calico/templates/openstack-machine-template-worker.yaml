@@ -18,10 +18,8 @@ spec:
       image:
         filter:
           name: {{ $.Values.workerNodes.defaults.imageName }}
-      ports:
-        - network:
-            filter:
-              name: {{ $.Values.infraConfig.internalNetwork.netName }}
+      # Configuración de los puertos
+      ports: {{ $worker.ports | default $.Values.workerNodes.defaults.ports }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ $.Values.infraConfig.keypairName }}
 

@@ -10,16 +10,6 @@ spec:
     name: {{ .Values.cluster.name }}-cloud-config
     cloudName: openstack
 
-  # Configuracion de red interna
-  network:
-    filter:
-      name: {{ .Values.infraConfig.internalNetwork.netName }}
-
-  # Configuración de subred
-  subnets:
-    - filter:
-        name: {{ .Values.infraConfig.internalNetwork.subnetName }}
-
   controlPlaneAvailabilityZones:
   {{- range $.Values.infraConfig.availabilityZones }}
     - {{ . }}
