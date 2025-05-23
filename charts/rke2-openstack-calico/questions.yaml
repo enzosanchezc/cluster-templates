@@ -9,7 +9,7 @@ questions:
   type: string
   group: "General"
 - variable: cluster.apiServerVIP
-  default:
+  default: "10.100.16.181"
   label: "API Server VIP"
   description: "Floating IP for the API server"
   required: true
