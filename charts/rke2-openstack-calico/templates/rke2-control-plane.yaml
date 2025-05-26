@@ -77,7 +77,14 @@ spec:
   # Esta configuración se aplica a todos los nodos del plano de control
   agentConfig:
     # NodeLabels son etiquetas con las que se registrará el kubelet
-    nodeLabels: {{ .Values.controlPlaneNodes.labels | default dict | toYaml | nindent 6 }}
+    nodeLabels:
+      {{- if .Values.controlPlaneNodes.labels }}
+      {{- range $k, $v := .Values.controlPlaneNodes.labels }}
+      - {{ printf "%s=%s" $k $v | nindent 6 }}
+      {{- end }}
+      {{- else }}
+      {{- list | toYaml | nindent 6 }}
+      {{- end }}
 
     # NodeAnnotations son anotaciones que se crean en los nodos después de la fase de bootstrap
     nodeAnnotations: {{ .Values.controlPlaneNodes.annotations | default dict | toYaml | nindent 6 }}

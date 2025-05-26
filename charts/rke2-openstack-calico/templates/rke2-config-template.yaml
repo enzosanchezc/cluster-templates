@@ -20,9 +20,15 @@ spec:
         # Etiquetas para los nodos Kubernetes
         nodeLabels:
           {{- if $worker.labels }}
-          {{- $worker.labels | toYaml | nindent 10 }}
+          {{- range $k, $v := $worker.labels }}
+          - {{- printf "%s=%s" $k $v }}
+          {{- end }}
+          {{- else if $.Values.workerNodes.defaults.labels }}
+          {{- range $k, $v := $.Values.workerNodes.defaults.labels }}
+          - {{- printf "%s=%s" $k $v }}
+          {{- end }}
           {{- else }}
-          {{- $.Values.workerNodes.defaults.labels | default dict | toYaml | nindent 10 }}
+          {{- list | toYaml | nindent 10 }}
           {{- end }}
 
         # Anotaciones para los nodos Kubernetes
